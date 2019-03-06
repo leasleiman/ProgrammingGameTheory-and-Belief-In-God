@@ -1,1 +1,169 @@
+import numpy as np
+import copy as cp
+
+
+##### Factors #####
+#The various factors that account for the payoffs of each actor.
+
+# God's Favor
+#A truthful belief in god is rewarded greatly
+Favor = 3
+
+# God's Disfavor
+#God punishes heathens greatly
+Disfavor = -3
+
+# Agreement
+#Those in agreement are happier
+Agreement = 2
+
+# Disagreement
+#Those in disagreement are unhappier
+Disagreement = -2
+
+# Skepticism
+#A successful nonbelief in God's existence is accurate
+Skepticism = 2
+
+# Delusion
+#Fallacious faith in God is an inconvenient belief
+Delusion = -2
+
+# BaseMatrix
+#An array of 2 2darrays that each represent
+#the payoff matrix for group 1 and group 2 respectively.
+BaseMatrix = np.zeros((2, 2, 2))
+
+##### Implementation #####
+# Implementation of each factor on the payoff matrix accounting for that factor.
+
+# mirth(3darray)
+#Accounting for Favor
+def mirth(matrix):
+    newMatrix = cp.copy(matrix)
+    #Player 1:
+    for i in [newMatrix[0][0, :]]:
+        i += Favor
+    #Player 2:
+    for i in [newMatrix[1][:, 0]]:
+        i += Favor
+    return newMatrix
+
+# antiMirth(3darray)
+#Accounting for Favor; used for AntiGod scenario
+def antiMirth(matrix):
+    newMatrix = cp.copy(matrix)
+    #Player 1:
+    for i in [newMatrix[0][1, :]]:
+        i += Favor
+    #Player 2:
+    for i in [newMatrix[1][:, 1]]:
+        i += Favor
+    return newMatrix
+
+# wrath(3darray)
+#Accounting for Disfavor
+def wrath(matrix):
+    newMatrix = cp.copy(matrix)
+    #Player 1:
+    for i in [newMatrix[0][1, :]]:
+        i += Disfavor
+    #Player 2:
+    for i in [newMatrix[1][:, 1]]:
+        i += Disfavor
+        return newMatrix
+
+# antiWrath(3darray)
+#Accounting for Disfavor; used for AntiGod scenario
+def antiWrath(matrix):
+    newMatrix = cp.copy(matrix)
+    #Player 1:
+    for i in [newMatrix[0][0, :]]:
+        i += Disfavor
+    #Player 2:
+    for i in [newMatrix[1][:, 0]]:
+        i += Disfavor
+        return newMatrix
+
+# coexistence(3darray)
+#Accounting for Agreement
+def coexistence(matrix):
+    newMatrix = cp.copy(matrix)
+    #Player 1:
+    newMatrix[0][-1][1] += Agreement
+    newMatrix[0][0][0] += Agreement
+    #Player 2:
+    newMatrix[1][1][1] += Agreement
+    newMatrix[1][0][0] += Agreement
+    return newMatrix
+
+# strife(3darray)
+#Accounting for Disagreement
+def strife(matrix):
+    newMatrix = cp.copy(matrix)
+    #Player 1:
+    newMatrix[0][0][1] += Disagreement
+    newMatrix[0][1][0] += Disagreement
+    #Player 2:
+    newMatrix[1][0][1] += Disagreement
+    newMatrix[1][1][0] += Disagreement
+    return newMatrix
+
+# atheism(3darray)
+#Accounting for Skepticism
+def atheism(matrix):
+    newMatrix = cp.copy(matrix)
+    #Player 1:
+    for i in [newMatrix[0][1, :]]:
+        i += Skepticism
+    #Player 2:
+    for i in [newMatrix[1][:, 1]]:
+        i += Skepticism
+    return newMatrix
+        
+# misguidance(3darray)
+#Accounting for Delusion
+def misguidance(matrix):
+    newMatrix = cp.copy(matrix)
+    #Player 1:
+    for i in [newMatrix[0][0, :]]:
+        i += Delusion
+    #Player 2:
+    for i in [newMatrix[1][:, 0]]:
+        i += Delusion
+    return newMatrix
+
+        
+##### Scenarios #####
+#Four distinct scenarios
+
+# GExist (3darray)
+#The function representing a scenario where God exists.
+#Accounts for Favor, Disfavor, Agreement, and Disagreement.
+def GExist(matrix):
+    return mirth(wrath(coexistence(strife(matrix))))
+
+# GExist (3darray)
+#The function representing a scenario where God doesn't exist.
+#Accounts for Skepticism, Delusion, Agreement, and Disagreement.
+def GDExist(matrix):
+#    atheism(BaseMatrix)
+#    misguidance(BaseMatrix)
+#    coexistence(BaseMatrix)
+#    strife(BaseMatrix)
+    return atheism(misguidance(coexistence(strife(matrix))))
+
+# GDCare(3darray)
+#The function representing a scenario where God doesn't care.
+#Accounts for Agreement and Disagreement only.
+def GDCare(matrix):
+    return coexistence(strife(matrix))
+
+# AntiGod(3darray)
+#The function representing a scenario where belief in God is punished.
+#Accounts for reversed Favor, reversed Disfavor, Agreement, and Disagreement.
+def AntiGod(matrix):
+    
+    return antiMirth(antiWrath(coexistence(strife(matrix))))
+
 
