@@ -143,7 +143,7 @@ def misguidance(matrix):
 def GExist(matrix):
     return mirth(wrath(coexistence(strife(matrix))))
 
-# GExist (3darray)
+# GDExist (3darray)
 #The function representing a scenario where God doesn't exist.
 #Accounts for Skepticism, Delusion, Agreement, and Disagreement.
 def GDExist(matrix):
