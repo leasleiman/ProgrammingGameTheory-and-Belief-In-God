@@ -167,3 +167,39 @@ def AntiGod(matrix):
     return antiMirth(antiWrath(coexistence(strife(matrix))))
 
 
+##### Choice Functions #####
+#The functions that dictate the choicemaking process of each player
+
+# p1Choose(3darray)
+#Calculates Player 1's initial choice
+def p1Choose(matrix):
+    return np.argmax(matrix[0].sum(axis = 1))
+
+# p2Choose(3darray)
+#Calculates Player 2's initial choice
+def p2Choose(matrix):
+    return np.argmax(matrix[1].sum(axis = 0))
+
+# p1ChooseMeta(3darray, int)
+#Calculates Player 1's choice, accounting for what Player 2 might do
+#Iterations is the amount of thought Player 1 gives to Player 2's
+#choice when making their own choice
+def p1ChooseMeta(matrix, iterations):
+    Choice = 0
+    if (iterations == 1):
+        Choice = np.argmax(matrix[0][p2Choose(matrix)])
+    else:
+        Choice = np.argmax(matrix[0][p2ChooseMeta(matrix, iterations - 1)])
+    return Choice
+
+# p2ChooseMeta(3darray, int)
+#Calculates Player 2's choice, accounting for what Player 1 might do
+#Iterations is the amount of thought Player 2 gives to Player 1's
+#choice when making their own choice
+def p2ChooseMeta(matrix, iterations):
+    Choice = 0
+    if (iterations == 1):
+        Choice = np.argmax(np.transpose(matrix[1])[p1Choose(matrix)])
+    else:
+        Choice = np.argmax(np.transpose(matrix[1])[p1ChooseMeta(matrix, iterations - 1)])
+    return Choice
