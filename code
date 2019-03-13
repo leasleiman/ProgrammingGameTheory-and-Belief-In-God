@@ -173,33 +173,128 @@ def AntiGod(matrix):
 # p1Choose(3darray)
 #Calculates Player 1's initial choice
 def p1Choose(matrix):
-    return np.argmax(matrix[0].sum(axis = 1))
+    if matrix[0].sum(axis = 1)[0] == matrix[0].sum(axis = 1)[1]:
+        return -1
+    else:
+        return np.argmax(matrix[0].sum(axis = 1))
 
 # p2Choose(3darray)
 #Calculates Player 2's initial choice
 def p2Choose(matrix):
-    return np.argmax(matrix[1].sum(axis = 0))
+    if matrix[1].sum(axis = 1)[0] == matrix[1].sum(axis = 0)[1]:
+        return -1
+    else:
+        return np.argmax(matrix[1].sum(axis = 0))
 
 # p1ChooseMeta(3darray, int)
 #Calculates Player 1's choice, accounting for what Player 2 might do
 #Iterations is the amount of thought Player 1 gives to Player 2's
 #choice when making their own choice
 def p1ChooseMeta(matrix, iterations):
-    Choice = 0
-    if (iterations == 1):
-        Choice = np.argmax(matrix[0][p2Choose(matrix)])
+    choice = 0
+    if matrix[0].sum(axis = 1)[0] == matrix[0].sum(axis = 1)[1]:
+        return -1
+    elif (iterations == 1):
+        choice = np.argmax(matrix[0][:,p2Choose(matrix)])
     else:
-        Choice = np.argmax(matrix[0][p2ChooseMeta(matrix, iterations - 1)])
-    return Choice
+        choice = np.argmax(matrix[0][:,p2ChooseMeta(matrix, iterations - 1)])
+    return choice
 
 # p2ChooseMeta(3darray, int)
 #Calculates Player 2's choice, accounting for what Player 1 might do
 #Iterations is the amount of thought Player 2 gives to Player 1's
 #choice when making their own choice
 def p2ChooseMeta(matrix, iterations):
-    Choice = 0
-    if (iterations == 1):
-        Choice = np.argmax(np.transpose(matrix[1])[p1Choose(matrix)])
+    choice = 0
+    if matrix[1].sum(axis = 1)[0] == matrix[1].sum(axis = 0)[1]:
+        return -1
+    elif iterations == 1:
+        choice = np.argmax(matrix[1][p1Choose(matrix)])
     else:
-        Choice = np.argmax(np.transpose(matrix[1])[p1ChooseMeta(matrix, iterations - 1)])
-    return Choice
+        choice = np.argmax(matrix[1][p1ChooseMeta(matrix, iterations - 1)])
+    return choice
+
+# p1Stakes(3darray, int)
+#Calculates Player 1's stakes for a given choice, accounting for
+#what Player 2 might do
+#Iterations is the amount of thought Player 1 gives to Player 2's
+#choice when calculating their own stakes
+def p1Stakes(matrix, iterations):
+    stakes = 0
+    if p1Choose(matrix) == -1:
+        return stakes
+    elif iterations == 1:
+        stakes = max(matrix[0][:,p2Choose(matrix)]) - min(matrix[0][:,p2Choose(matrix)])
+    else:
+        stakes = max(matrix[0][:,p2ChooseMeta(matrix, iterations - 1)]) - min(matrix[0][:,p2ChooseMeta(matrix, iterations - 1)])
+    return stakes
+
+# p2Stakes(3darray, int)
+#Calculates Player 2's stakes for a given choice, accounting for
+#what Player 1 might do
+#Iterations is the amount of thought Player 2 gives to Player 1's
+#choice when calculating their own stakes
+def p2Stakes(matrix, iterations):
+    stakes = 0
+    if p1Choose(matrix) == -1:
+        return stakes
+    elif iterations == 1:
+        stakes = max(matrix[1][p1Choose(matrix)]) - min(matrix[1][p1Choose(matrix)])
+    else:
+        stakes = max(matrix[1][p1ChooseMeta(matrix, iterations - 1)]) - min(matrix[1][p1ChooseMeta(matrix, iterations - 1)])
+    return stakes
+
+
+# p1ChooseGuessing(int)
+#Calculates Player 1's choice, accounting not only for what Player 1
+#might do, but also any of the scenarios as a potential matrix.
+#Iterations is the amount of thought Player 1 gives to Player 2's
+#choice when making their own choice.
+def p1ChooseGuessing(iterations):
+    #The choices for each given scenario, from the list Scenarios
+    choices = np.zeros(len(Scenarios))
+    #The weight that each choice has
+    weights = np.zeros(len(Scenarios))
+    for i in range(len(Scenarios)):
+        choices[i] = p1ChooseMeta(Scenarios[i](BaseMatrix), iterations)
+        weights[i] = p1Stakes(Scenarios[i](BaseMatrix), iterations)
+    weightedChoices = [choices, weights]
+    choice = 0
+#weightedChoices no longer follows the same syntax after this loop.
+    for i in range(np.shape(weightedChoices)[1]):
+        if weightedChoices[0][i] == 0:
+            weightedChoices[0][i] = -1
+        choice += weightedChoices[0][i] * weightedChoices[1][i]
+    if choice > 0:
+        return 1
+    elif choice < 0:
+        return 0
+    else:
+        return rd.randint(0, 1)
+
+# p2ChooseGuessing(int)
+#Calculates Player 2's choice, accounting not only for what Player 2
+#might do, but also any of the scenarios as a potential matrix.
+#Iterations is the amount of thought Player 2 gives to Player 1's
+#choice when making their own choice.
+def p2ChooseGuessing(iterations):
+    #The choices for each given scenario, from the list Scenarios
+    choices = np.zeros(len(Scenarios))
+    #The weight that each choice has
+    weights = np.zeros(len(Scenarios))
+    for i in range(len(Scenarios)):
+        choices[i] = p2ChooseMeta(Scenarios[i](BaseMatrix), iterations)
+        weights[i] = p2Stakes(Scenarios[i](BaseMatrix), iterations)
+    weightedChoices = [choices, weights]
+    choice = 0
+#weightedChoices no longer follows the same syntax after this loop.
+    for i in range(np.shape(weightedChoices)[1]):
+        if weightedChoices[0][i] == 0:
+            weightedChoices[0][i] = -1
+        choice += weightedChoices[0][i] * weightedChoices[1][i]
+    if choice > 0:
+        return 1
+    elif choice < 0:
+        return 0
+    else:
+        return rd.randint(0, 1)
