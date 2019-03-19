@@ -1,5 +1,6 @@
 import numpy as np
 import copy as cp
+import random as rd
 
 
 ##### Factors #####
@@ -23,16 +24,17 @@ Disagreement = -2
 
 # Skepticism
 #A successful nonbelief in God's existence is accurate
-Skepticism = 2
+Skepticism = 0
 
 # Delusion
 #Fallacious faith in God is an inconvenient belief
-Delusion = -2
+Delusion = -0
 
 # BaseMatrix
 #An array of 2 2darrays that each represent
 #the payoff matrix for group 1 and group 2 respectively.
 BaseMatrix = np.zeros((2, 2, 2))
+
 
 ##### Implementation #####
 # Implementation of each factor on the payoff matrix accounting for that factor.
@@ -166,6 +168,10 @@ def AntiGod(matrix):
     
     return antiMirth(antiWrath(coexistence(strife(matrix))))
 
+# Scenarios
+#An array of 4 functions that are each of the scenarios
+Scenarios = [GExist, GDExist, GDCare, AntiGod]
+
 
 ##### Choice Functions #####
 #The functions that dictate the choicemaking process of each player
@@ -250,14 +256,14 @@ def p2Stakes(matrix, iterations):
 #might do, but also any of the scenarios as a potential matrix.
 #Iterations is the amount of thought Player 1 gives to Player 2's
 #choice when making their own choice.
-def p1ChooseGuessing(iterations):
+def p1ChooseGuessing(matrix, iterations):
     #The choices for each given scenario, from the list Scenarios
     choices = np.zeros(len(Scenarios))
     #The weight that each choice has
     weights = np.zeros(len(Scenarios))
     for i in range(len(Scenarios)):
-        choices[i] = p1ChooseMeta(Scenarios[i](BaseMatrix), iterations)
-        weights[i] = p1Stakes(Scenarios[i](BaseMatrix), iterations)
+        choices[i] = p1ChooseMeta(Scenarios[i](matrix), iterations)
+        weights[i] = p1Stakes(Scenarios[i](matrix), iterations)
     weightedChoices = [choices, weights]
     choice = 0
 #weightedChoices no longer follows the same syntax after this loop.
@@ -277,14 +283,14 @@ def p1ChooseGuessing(iterations):
 #might do, but also any of the scenarios as a potential matrix.
 #Iterations is the amount of thought Player 2 gives to Player 1's
 #choice when making their own choice.
-def p2ChooseGuessing(iterations):
+def p2ChooseGuessing(matrix, iterations):
     #The choices for each given scenario, from the list Scenarios
     choices = np.zeros(len(Scenarios))
     #The weight that each choice has
     weights = np.zeros(len(Scenarios))
     for i in range(len(Scenarios)):
-        choices[i] = p2ChooseMeta(Scenarios[i](BaseMatrix), iterations)
-        weights[i] = p2Stakes(Scenarios[i](BaseMatrix), iterations)
+        choices[i] = p2ChooseMeta(Scenarios[i](matrix), iterations)
+        weights[i] = p2Stakes(Scenarios[i](matrix), iterations)
     weightedChoices = [choices, weights]
     choice = 0
 #weightedChoices no longer follows the same syntax after this loop.
@@ -298,3 +304,4 @@ def p2ChooseGuessing(iterations):
         return 0
     else:
         return rd.randint(0, 1)
+
