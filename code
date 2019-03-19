@@ -24,11 +24,11 @@ Disagreement = -2
 
 # Skepticism
 #A successful nonbelief in God's existence is accurate
-Skepticism = 0
+Skepticism = 2
 
 # Delusion
 #Fallacious faith in God is an inconvenient belief
-Delusion = -0
+Delusion = -2
 
 # BaseMatrix
 #An array of 2 2darrays that each represent
