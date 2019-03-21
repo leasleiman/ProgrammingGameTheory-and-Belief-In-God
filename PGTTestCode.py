@@ -16,11 +16,11 @@ Disfavor = -3
 
 # Agreement
 #Those in agreement are happier
-Agreement = 2
+Agreement = 0
 
 # Disagreement
 #Those in disagreement are unhappier
-Disagreement = -2
+Disagreement = -0
 
 # Skepticism
 #A successful nonbelief in God's existence is accurate
@@ -31,10 +31,10 @@ Skepticism = 2
 Delusion = -2
 
 #Anti god punishes belief
-aBelief = -4
+aBelief = -3
 
 #Anti god likes non belief (but doesnt care that much cause they r evil)
-aNonBelief = 1
+aNonBelief = 3
 
 # BaseMatrix
 #An array of 2 2darrays that each represent
@@ -171,10 +171,10 @@ def bothBelieve():
 
 #P1B & P2D
 def bothDisbelieve():
-    P1B = 1
-    P2B = 1
+    P1B = 0
+    P2B = 0
     
-    #P1B (0) P2B (0)
+    #P1B (1) P2B (1)
     for i in range(1000):
         
         matrix = chooseMatrix()
@@ -187,9 +187,9 @@ def bothDisbelieve():
 #P1B & P2D
 def believeDis():
     P1B = 0
-    P2D = 1
+    P2D = 0
     
-    #P1B (0) P2B (0)
+    #P1B (0) P2B (1)
     for i in range(1000):
         
         matrix = chooseMatrix()
@@ -200,10 +200,10 @@ def believeDis():
     return P1B, P2D
 #P1D & P2B
 def disBelieve():
-    P1D = 1
+    P1D = 0
     P2B = 0
     
-    #P1B (0) P2B (0)
+    #P1B (1) P2B (0)
     for i in range(1000):
         
         matrix = chooseMatrix()
