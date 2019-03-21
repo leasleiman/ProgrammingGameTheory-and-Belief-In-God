@@ -41,8 +41,7 @@ aNonBelief = 1
 #the payoff matrix for group 1 and group 2 respectively.
 BaseMatrix = np.zeros((2, 2, 2))
 
-# mirth(3darray)
-#Accounting for Favor
+#Matrix Creation
 def yesGod(matrix):
     newMatrix = cp.copy(matrix)
     #Player 1:
@@ -140,7 +139,7 @@ def antiGod(matrix):
 
     return newMatrix
 
-
+#choose matrix functions
 def chooseMatrix():
     sitch = random.randint(0,3)
     if sitch == 0:
@@ -155,13 +154,13 @@ def chooseMatrix():
     return matrix
     
     
-
+#P1B & P2B
 def bothBelieve():
     P1B = 0
     P2B = 0
     
     #P1B (0) P2B (0)
-    for i in range(100):
+    for i in range(1000):
         
         matrix = chooseMatrix()
                 
@@ -170,12 +169,13 @@ def bothBelieve():
 
     return P1B, P2B
 
+#P1B & P2D
 def bothDisbelieve():
     P1B = 1
     P2B = 1
     
     #P1B (0) P2B (0)
-    for i in range(100):
+    for i in range(1000):
         
         matrix = chooseMatrix()
                 
@@ -184,12 +184,13 @@ def bothDisbelieve():
 
     return P1B, P2B
 
+#P1B & P2D
 def believeDis():
     P1B = 0
     P2D = 1
     
     #P1B (0) P2B (0)
-    for i in range(100):
+    for i in range(1000):
         
         matrix = chooseMatrix()
                 
@@ -197,13 +198,13 @@ def believeDis():
         P2D += matrix[1][0,1]
 
     return P1B, P2D
-
+#P1D & P2B
 def disBelieve():
     P1D = 1
     P2B = 0
     
     #P1B (0) P2B (0)
-    for i in range(100):
+    for i in range(1000):
         
         matrix = chooseMatrix()
                 
@@ -213,7 +214,7 @@ def disBelieve():
     return P1D, P2B
     
     
-
+#Main function
 def Main():
 
     P1B, P2B = bothBelieve()
